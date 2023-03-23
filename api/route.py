@@ -128,3 +128,64 @@ def create_chart(schedule_info):
     plt.plot()
     plt.savefig(file_path)
     plt.close()
+
+@main.route('/get_developers', methods=['GET'])
+def get_developers():
+    file_dir = os.path.join(os.path.abspath(
+        os.getcwd()), 'api', 'static') + '/*.xlsx'
+    file_list = glob.glob(file_dir)
+    file = file_list[0]
+    df = pd.read_excel(file, sheet_name="SprintData")
+    list_developers = df.Developer.unique()
+    dev = {"Developers" : []}
+    for developer in list_developers:
+        dev["Developers"].append(developer) 
+    return createResponseObject(dev)
+
+@main.route('/developer_performance/<developer_name>', methods=['GET'])
+def developer_performance(developer_name):
+    file_dir = os.path.join(os.path.abspath(
+        os.getcwd()), 'api', 'static') + '/*.xlsx'
+    file_list = glob.glob(file_dir)
+    file = file_list[0]
+    df = pd.read_excel(file, sheet_name="SprintData")
+    developers = df.Developer.unique()
+    dev_perf = {}
+    for developer in developers:
+        df_developer = df.loc[df["Developer"] == developer]
+        project_code = df_developer.Project.unique()
+        project_perf = {}
+        for project in project_code:
+            df_project = df_developer.loc[df_developer["Project"] == project]
+            sum = df_project["Story Point"].sum()
+            project_perf[project] = sum
+        dev_perf[developer] = project_perf
+    create_perf_chart(dev_perf,developer_name)
+    return 'Done', 201
+
+def create_perf_chart(dev_perf,developer_name):
+    figure_title = "Performance Chart for " + developer_name
+    file_name = 'Performance_' + developer_name + '.png'
+    figure_path = os.path.join(os.path.abspath(
+        os.getcwd()), 'api', 'static', file_name)
+    perf_chart = dev_perf[developer_name]
+    project_code = []
+    story_point = []
+    for project in perf_chart.keys():
+        project_code.append(project)
+    for point in perf_chart.values():
+        story_point.append(point)
+    df = pd.DataFrame(data={"Project" : project_code, "StoryPoint": story_point})
+    plt.style.use("ggplot")
+    plt.switch_backend('Agg')
+    fig = plt.figure(figsize=(20,10))
+    x_axis = project_code
+    y_axis = story_point
+    plt.xticks(fontsize=15)
+    plt.yticks(fontsize=15)
+    plt.plot(x_axis, y_axis, color='blue', label='Completed Points', linewidth=4, linestyle="dashdot")
+    plt.xlabel("Project Codes", fontsize=20, fontweight="bold", labelpad=10, color="black")
+    plt.ylabel("Story Points", fontsize=20, fontweight="bold", labelpad=10, color="black")
+    plt.ylim(0,40)
+    plt.title(figure_title, fontsize=30, loc="center", pad=20, fontweight="bold")
+    plt.savefig(figure_path)
