@@ -2,3 +2,4 @@
 api/__pycache__/route.cpython-310.pyc
 frontend/node_modules
 test.py
+frontend/.env
