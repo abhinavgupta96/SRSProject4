@@ -2,11 +2,13 @@
 
 ## Backend Flask Server
 
-`python3 api/__init__.py` to run the flask API backend
+1. `python3 api/__init__.py` to run the flask API backend
 
-`cd frontend && npm install` to install NPM dependencies for frontend 
+2. `cd frontend && npm install` to install NPM dependencies for frontend 
 
-`npm start` to start the frontend dev server
+3. Add a file `.env` to /frontend and include variable `REACT_APP_CLIENT_ID=<your-google-oauth-client-id>`
+
+4. `npm start` to start the frontend dev server
 
 
 # General Information
