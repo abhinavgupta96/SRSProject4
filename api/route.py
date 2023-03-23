@@ -70,7 +70,8 @@ def sprint_burndown_project_name(project_name):
         story_completed[i] = df2
         story_planned[i] = df4
     create_figure(story_completed, story_planned, project_name)
-    return 'Done', 201
+    status_code = {201 : "Done"}
+    return createResponseObject(status_code)
 
 @main.route('/gantt_chart', methods=['GET'])
 def gantt_chart():
@@ -88,7 +89,8 @@ def gantt_chart():
         complete_date = df_project.loc[df_project['Sprint'] == sprint_value[-1]].CompleteDate.iloc[0].strftime('%Y-%m-%d')
         schedule_info[project] = [start_date,complete_date]
     create_chart(schedule_info)
-    return 'Done', 201
+    status_code = {201 : "Done"}
+    return createResponseObject(status_code)
 
 def create_chart(schedule_info):
     file_name = 'gantt_chart.png'
@@ -161,7 +163,8 @@ def developer_performance(developer_name):
             project_perf[project] = sum
         dev_perf[developer] = project_perf
     create_perf_chart(dev_perf,developer_name)
-    return 'Done', 201
+    status_code = {201 : "Done"}
+    return createResponseObject(status_code)
 
 def create_perf_chart(dev_perf,developer_name):
     figure_title = "Performance Chart for " + developer_name
