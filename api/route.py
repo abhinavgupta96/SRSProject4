@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from datetime import date, timedelta
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
@@ -70,3 +71,60 @@ def sprint_burndown_project_name(project_name):
         story_planned[i] = df4
     create_figure(story_completed, story_planned, project_name)
     return 'Done', 201
+
+@main.route('/gantt_chart', methods=['GET'])
+def gantt_chart():
+    file_dir = os.path.join(os.path.abspath(
+        os.getcwd()), 'api', 'static') + '/*.xlsx'
+    file_list = glob.glob(file_dir)
+    file = file_list[0]
+    df_planning = pd.read_excel(file, sheet_name="SprintPlanning")
+    schedule_info = {}
+    project_code = df_planning.Project.unique()
+    for project in project_code:
+        df_project = df_planning.loc[df_planning['Project'] == project]
+        sprint_value = df_project.Sprint.unique()
+        start_date = df_project.loc[df_project['Sprint'] == sprint_value[0]].StartDate.iloc[0].strftime('%Y-%m-%d')
+        complete_date = df_project.loc[df_project['Sprint'] == sprint_value[-1]].CompleteDate.iloc[0].strftime('%Y-%m-%d')
+        schedule_info[project] = [start_date,complete_date]
+    create_chart(schedule_info)
+    return 'Done', 201
+
+def create_chart(schedule_info):
+    file_name = 'gantt_chart.png'
+    file_path = os.path.join(os.path.abspath(
+        os.getcwd()), 'api', 'static', file_name)
+    project_code = []
+    start = []
+    end = []
+    for key in schedule_info.keys():
+        project_code.append(key)
+    for project in project_code:
+        start_date = schedule_info[project][0]
+        end_date = schedule_info[project][1]
+        start.append(start_date)
+        end.append(end_date)
+    df = pd.DataFrame(data={"Project" : project_code, "Start": start, "End": end})
+    df["Start"] = pd.to_datetime(df.Start)
+    df["End"] = pd.to_datetime(df.End)
+    df["Days"] = df["End"] - df["Start"]
+    df["Color"] = plt.cm.Set1.colors[:len(df)]
+    plt.style.use("ggplot")
+    plt.switch_backend('Agg')
+    fig = plt.figure(figsize=(20,10))
+    plt.barh(y=df["Project"], left=df["Start"], width=df["Days"], color=df["Color"])
+    current_date = date.today()
+    text_date = current_date + timedelta(days=5)
+    plt.vlines(x=current_date, ymin=-0.5, ymax=5, colors="dodgerblue", linestyles="dashed", linewidth=5)
+    plt.text(x=text_date, y=4, s="Today", fontsize=20, fontweight="bold", color="black")
+    plt.xlim(date(2023,1,1), date(2023,12,31))
+    plt.ylim(-0.5, 5)
+    dt_rng = pd.date_range(start="2023-1-1", end="2023-12-31", freq="MS")
+    plt.xticks(dt_rng,[dt.month_name() for dt in dt_rng], fontsize=15)
+    plt.yticks(fontsize=15)
+    plt.xlabel("Date", fontsize=20, fontweight="bold", labelpad=10)
+    plt.ylabel("Project", fontsize=20, fontweight="bold", labelpad=10)
+    plt.title("Gantt Chart", fontsize=30, loc="center", pad=20, fontweight="bold")
+    plt.plot()
+    plt.savefig(file_path)
+    plt.close()
