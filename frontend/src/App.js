@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google"
 import "./App.css"
 import ButtonList from "./components/ButtonList"
+import TextArea from "./components/TextArea"
 
 const IMG_BASE = "http://localhost:5000/static"
 
@@ -62,16 +63,13 @@ const App = () => {
         <div className="m-4 d-flex flex-column justify-content-center">
             <GoogleOAuthProvider clientId={process.env.REACT_APP_CLIENT_ID}>
                 <div className="">
-                    <p className="fw-bold">
-                        <mark>
-                            <bold>Agile Chart Visualization</bold>
-                        </mark>
-                    </p>
+                    <TextArea
+                        text={"Agile Chart Visualization"}
+                        className="fw-bold"
+                    />
                     <hr />
                     <div className="m-2">
-                        <p>
-                            <mark>Choose a chart</mark>
-                        </p>
+                        <TextArea text={"Choose a chart"} className="" />
                     </div>
                     <ButtonList
                         buttons={charts}
@@ -80,12 +78,12 @@ const App = () => {
                     />
                     <hr />
                     <div className="m-2">
-                        <p>
-                            <mark>
-                                Choose a developer to view their performance
-                                chart
-                            </mark>
-                        </p>
+                        <TextArea
+                            text={
+                                "Choose a developer to view their performance chart"
+                            }
+                            className=""
+                        />
                     </div>
                     <ButtonList
                         buttons={developers}
