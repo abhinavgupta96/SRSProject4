@@ -22,13 +22,13 @@ users = []
 
 @main.route('/register', methods=['POST'])
 def register():
-    print("GOT A REQUEST")
     data = request.get_json()
     username = data.get('username')
+    role = data.get('role')
     password = data.get('password')
 
-    if not username or not password:
-        return jsonify({'message': 'Either/both username or password is missing'}), 400
+    if not username or not password or not role:
+        return jsonify({'message': 'Some/all of username, role and password are missing'}), 400
 
     if len(username) < 4 or len(username) > 32:
         return jsonify({'message': 'Username does not conform to length restrictions'}), 400
@@ -42,7 +42,7 @@ def register():
 
     passwordHash = generate_password_hash(password, method='sha256')
 
-    user = {'username': username, 'password': passwordHash}
+    user = {'username': username, 'role': role, 'password': passwordHash}
     users.append(user)
 
     return jsonify({'message': 'User was registered added to DB'}), 201
@@ -60,7 +60,11 @@ def login():
     for user in users:
         if user['username'] == username:
             if check_password_hash(user['password'], password):
-                return jsonify({'message': 'Login was successful'}), 200
+                print(user)
+                return jsonify(
+                    {'message': 'Login was successful', 'user': {
+                        'username': user['username'], 'role': user['role']}}
+                ), 200
 
     return jsonify({'message': 'Invalid username or password. Please retry.'}), 401
 
