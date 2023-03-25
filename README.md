@@ -6,9 +6,7 @@
 
 2. `cd frontend && npm install` to install NPM dependencies for frontend 
 
-3. Add a file `.env` to /frontend and include variable `REACT_APP_CLIENT_ID=<your-google-oauth-client-id>`
-
-4. `npm start` to start the frontend dev server
+3. `npm start` to start the frontend dev server
 
 
 # General Information
