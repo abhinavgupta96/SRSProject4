@@ -31,13 +31,19 @@ const Login = () => {
             body: JSON.stringify(data),
         }).then((response) => {
             response.json().then((data) => {
-                setLoginResponse(
-                    data["message"] + "! Redirecting you to the main page..."
-                )
-                localStorage.setItem("user", JSON.stringify(data["user"]))
-                setTimeout(() => {
-                    navigate("/graph")
-                }, 3000)
+                if (response.status == 200) {
+                    // Save user data and redirect
+                    setLoginResponse(
+                        data["message"] +
+                            "! Redirecting you to the main page..."
+                    )
+                    localStorage.setItem("user", JSON.stringify(data["user"]))
+                    setTimeout(() => {
+                        navigate("/graph")
+                    }, 3000)
+                } else {
+                    setLoginResponse(data["message"])
+                }
             })
         })
     }

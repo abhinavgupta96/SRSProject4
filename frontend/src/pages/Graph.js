@@ -7,8 +7,17 @@ const IMG_BASE = "http://localhost:5000/static"
 const Graph = () => {
     const [charts, setCharts] = useState([])
     const [developers, setDevelopers] = useState([])
-    const [chart, setChart] = useState(null)
+    const [chartName, setChart] = useState(null)
     const imgRef = useRef()
+    const [role, setRole] = useState("")
+    const [username, setUsername] = useState("")
+    const [access, setAccess] = useState(null)
+
+    useEffect(() => {
+        const { role, username } = JSON.parse(localStorage.getItem("user"))
+        setRole(role)
+        setUsername(username)
+    }, [])
 
     useEffect(() => {
         fetch("/sprint_burndown").then((response) => {
@@ -41,37 +50,49 @@ const Graph = () => {
         })
     }, [])
 
-    const handleChartDisplay = (chart, type) => {
+    const handleChartDisplay = (chartName, type) => {
         let img = imgRef.current
         img.style.height = "400px"
         img.style.width = "auto"
+        setAccess(true)
         switch (type) {
             case "PROJECT": {
-                if (!chart === "gantt_chart") {
-                    fetch(`/sprint_burndown/${chart}`).then((response) => {
+                if (!chartName === "gantt_chart") {
+                    fetch(`/sprint_burndown/${chartName}`).then((response) => {
                         response.json().then((data) => {
                             if (data[201] == "Done") {
-                                setChart(chart)
+                                setChart(chartName)
                             }
                         })
                     })
                 } else {
-                    setChart(chart)
+                    setChart(chartName)
                 }
                 return
             }
-            case "DEVELOPER": {
-                fetch(`/developer_performance/${chart}`).then((response) => {
-                    response.json().then((data) => {
-                        if (data[201] == "Done") {
-                            setChart(`Performance_${chart}`)
+            case "USER": {
+                if (role === "developer" && username === chartName) {
+                    fetch(`/developer_performance/${chartName}`).then(
+                        (response) => {
+                            response.json().then((data) => {
+                                if (data[201] == "Done") {
+                                    setChart(`Performance_${chartName}`)
+                                }
+                            })
                         }
-                    })
-                })
+                    )
+                } else {
+                    setChart("")
+                    setAccess(false)
+                    img.style.height = "0px"
+                    img.style.width = "0px"
+                }
                 return
             }
         }
     }
+
+    console.log(`${IMG_BASE}/${chartName}.png`)
 
     return (
         <div className="m-4 d-flex flex-column justify-content-center">
@@ -82,7 +103,7 @@ const Graph = () => {
                 />
                 <hr />
                 <div className="m-2">
-                    <TextArea text={"Choose a chart"} className="" />
+                    <TextArea text={"Choose a chartName"} className="" />
                 </div>
                 <ButtonList
                     buttons={charts}
@@ -101,17 +122,27 @@ const Graph = () => {
                 <ButtonList
                     buttons={developers}
                     handleChartDisplay={handleChartDisplay}
-                    type="DEVELOPER"
+                    type="USER"
                 />
             </div>
             <div>
                 <img
                     ref={imgRef}
-                    src={`${IMG_BASE}/${chart}.png`}
+                    src={`${IMG_BASE}/${chartName}.png`}
                     width={"0px"}
                     height={"0px"}
                 />
             </div>
+            {access !== null && !access && (
+                <div className="mt-4">
+                    <TextArea
+                        text={
+                            "Sorry, you do not have sufficient permission to view this chart. \
+                            We're keeping performance data private for a user"
+                        }
+                    />
+                </div>
+            )}
         </div>
     )
 }
