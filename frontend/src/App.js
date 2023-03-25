@@ -49,15 +49,33 @@ const App = () => {
         img.style.width = "auto"
         switch (type) {
             case "PROJECT": {
-                setChart(chart)
+                if (!chart === "gantt_chart") {
+                    fetch(`/sprint_burndown/${chart}`).then((response) => {
+                        response.json().then((data) => {
+                            if (data[201] == "Done") {
+                                setChart(chart)
+                            }
+                        })
+                    })
+                } else {
+                    setChart(chart)
+                }
                 return
             }
             case "DEVELOPER": {
-                setChart(`Performance_${chart}`)
+                fetch(`/developer_performance/${chart}`).then((response) => {
+                    response.json().then((data) => {
+                        if (data[201] == "Done") {
+                            setChart(`Performance_${chart}`)
+                        }
+                    })
+                })
                 return
             }
         }
     }
+
+    console.log(`${IMG_BASE}/${chart}.png`)
 
     return (
         <div className="m-4 d-flex flex-column justify-content-center">
