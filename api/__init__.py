@@ -11,5 +11,6 @@ def create_app():
 
 
 if __name__ == "__main__":
+    ##Adding support for HTTPS by implementing self-signed certificates. This prototype was implemented by Abhinav Gupta
     app = create_app()
-    app.run(debug=True)
+    app.run(debug=True, ssl_context=('cert.pem', 'priv_key.pem'))
