@@ -1,5 +1,7 @@
 import React from "react"
 
+// AUTHOR: SIRI RACHAPPA JARMALE
+
 const TextArea = ({ text, className }) => {
     return (
         <p className={className}>

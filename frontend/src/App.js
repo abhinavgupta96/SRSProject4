@@ -6,6 +6,8 @@ import Register from "./pages/Register"
 import Graph from "./pages/Graph"
 import Login from "./pages/Login"
 
+// AUTHOR: SHISHIR ARCHANA SRIKANTH
+
 const App = () => {
     return (
         <Routes>

@@ -9,7 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 main = Blueprint('main', __name__)
 
-
+# AUTHOR: SHISHIR ARCHANA SRIKANTH
 def createResponseObject(obj):
     response = jsonify(obj)
     response.headers.add('Access-Control-Allow-Origin', '*')
@@ -19,7 +19,7 @@ def createResponseObject(obj):
 # Mimic users table in DB as in-memory array for prototype
 users = []
 
-
+# AUTHOR: SIRI RACHAPPA JARMALE
 @main.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
@@ -47,7 +47,7 @@ def register():
 
     return jsonify({'message': 'User was registered added to DB'}), 201
 
-
+# AUTHOR: SHISHIR ARCHANA SRIKANTH
 @main.route('/login', methods=['POST'])
 def login():
     data = request.get_json()

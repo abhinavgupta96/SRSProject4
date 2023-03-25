@@ -1,6 +1,8 @@
 import React from "react"
 import TextArea from "../components/TextArea"
 
+// AUTHOR: SIRI RACHAPPA JARMALE
+
 const Home = () => {
     return (
         <div className="m-4 d-flex flex-column align-items-center">

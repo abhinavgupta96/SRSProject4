@@ -1,5 +1,7 @@
 import React from "react"
 
+// AUTHOR: SIRI RACHAPPA JARMALE
+
 const ButtonList = ({ buttons, handleChartDisplay, type }) => {
     return (
         <React.Fragment>

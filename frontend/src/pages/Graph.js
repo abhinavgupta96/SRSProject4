@@ -4,6 +4,8 @@ import TextArea from "../components/TextArea"
 
 const IMG_BASE = "http://localhost:5000/static"
 
+// AUTHOR: SHISHIR ARCHANA SRIKANTH
+
 const Graph = () => {
     const [charts, setCharts] = useState([])
     const [developers, setDevelopers] = useState([])
