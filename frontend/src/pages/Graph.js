@@ -2,9 +2,13 @@ import React, { useEffect, useRef, useState } from "react"
 import ButtonList from "../components/ButtonList"
 import TextArea from "../components/TextArea"
 
-const IMG_BASE = "http://localhost:5000/static"
+const IMG_BASE = "https://localhost:8000/static"
 
 // AUTHOR: SHISHIR ARCHANA SRIKANTH
+// Uses the graph generated on the flask backend to display it to a user with sufficient previleges
+// Developers can access only their performance reports
+// Managers cannot access developer reports
+// Risk Reduction Prototype: Role Based Access Control
 
 const Graph = () => {
     const [charts, setCharts] = useState([])
@@ -22,7 +26,7 @@ const Graph = () => {
     }, [])
 
     useEffect(() => {
-        fetch("/sprint_burndown").then((response) => {
+        fetch("/sprint_burndown", {mode: 'cors'}).then((response) => {
             console.log(response)
             response.json().then((data) => {
                 console.log(data["Project Codes"])

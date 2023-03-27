@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom"
 import TextArea from "../components/TextArea"
 
 // AUTHOR: SHISHIR ARCHANA SRIKANTH
+// Login page used to login an existing user onto the application
+// Risk reduction protype: Password Hashing
 
 const Login = () => {
     const [username, setUsername] = useState("")

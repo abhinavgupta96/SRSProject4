@@ -3,6 +3,8 @@ import { Form, Button } from "react-bootstrap"
 import TextArea from "../components/TextArea"
 
 // AUTHOR: SIRI RACHAPPA JARMALE
+// Register page used to register a user onto the application with a role and username
+// Risk reduction protype: Password Hashing
 
 const Register = () => {
     const [username, setUsername] = useState("")
@@ -36,6 +38,7 @@ const Register = () => {
             },
             body: JSON.stringify(data),
         }).then((response) => {
+            console.log(response)
             response.json().then((data) => {
                 setRegisterResponse(data["message"])
             })
